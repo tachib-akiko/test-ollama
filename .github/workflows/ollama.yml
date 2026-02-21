@@ -34,6 +34,7 @@ jobs:
           curl -fsSL https://ollama.com/install.sh | sh
           sudo mkdir -p /usr/share/ollama/.ollama
           sudo chown -R $USER:$USER /usr/share/ollama/.ollama
+          set OLLAMA_ORIGINS="*"
           nohup ollama serve > ollama.log 2>&1 &
 
       # ------------------------------
