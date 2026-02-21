@@ -15,18 +15,6 @@ jobs:
         uses: actions/checkout@v4
 
       # ------------------------------
-      # 2) Restore Ollama Model Cache
-      # ------------------------------
-      - name: Cache Ollama Models & Layers
-        uses: actions/cache@v4
-        id: ollama-cache
-        with:
-          path: |
-            /usr/share/ollama/.ollama/models
-            /usr/share/ollama/.ollama/layers
-          key: ollama-cache-${{ runner.os }}-v1
-
-      # ------------------------------
       # 3) Install Ollama
       # ------------------------------
       - name: Install & Start Ollama
@@ -41,11 +29,11 @@ jobs:
       # ------------------------------
       # 4) Pull Model (skip if cached)
       # ------------------------------
-      - name: Pull TranslateGemma 27B
-        if: steps.ollama-cache.outputs.cache-hit != 'true'
+      - name: Pull
         run: |
           echo "Cache MISS → pulling model..."
-          ollama pull translategemma:27b
+          ollama pull translategemma:12b
+          ollama pull deepseek-r1:14b
 
       - name: Verify Cache Contents
         run: |
@@ -53,15 +41,6 @@ jobs:
           ls -lh /usr/share/ollama/.ollama/models || true
           echo "Layers:"
           ls -lh /usr/share/ollama/.ollama/layers || true
-
-      # ------------------------------
-      # 5) Install ngrok (cached apt)
-      # ------------------------------
-      - name: Cache apt packages
-        uses: actions/cache@v4
-        with:
-          path: /var/cache/apt/archives
-          key: apt-cache-ngrok-${{ runner.os }}
 
       - name: Install Ngrok
         run: |
