@@ -1,0 +1,38 @@
+name: Deploy Ollama API with Cloudflare Tunnel
+
+on:
+  workflow_dispatch:
+
+jobs:
+  serve-ollama:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Install & Start Ollama
+        run: |
+          if ! command -v ollama &> /dev/null; then
+            curl -fsSL https://ollama.com | sh
+          fi
+          
+          export OLLAMA_HOST=0.0.0.0
+          export OLLAMA_ORIGINS="*"
+          export OLLAMA_NUM_PARALLEL=4
+          
+          nohup ollama serve > ollama.log 2>&1 &
+
+      - name: Pull TranslateGemma 27B
+        run: ollama pull translategemma:27b
+
+      - name: Setup Cloudflare Tunnel
+        run: |
+          curl -L --output cloudflared.deb https://github.com
+          sudo dpkg -i cloudflared.deb
+          nohup cloudflared tunnel --no-autoupdate run --token ${{ secrets.CLOUDFLARE_TUNNEL_TOKEN }} > cf.log 2>&1 &
+          
+      - name: Keep Alive
+        run: |
+          echo "Model: TranslateGemma:27b"
+          tail -f ollama.log
