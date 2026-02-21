@@ -33,14 +33,7 @@ jobs:
         run: |
           echo "Cache MISS → pulling model..."
           ollama pull translategemma:12b
-          ollama pull deepseek-r1:14b
-
-      - name: Verify Cache Contents
-        run: |
-          echo "Models:"
-          ls -lh /usr/share/ollama/.ollama/models || true
-          echo "Layers:"
-          ls -lh /usr/share/ollama/.ollama/layers || true
+          ollama pull translategemma:4b
 
       - name: Install Ngrok
         run: |
