@@ -24,6 +24,7 @@ jobs:
           sudo chown -R $USER:$USER /usr/share/ollama/.ollama
           export OLLAMA_ORIGINS="*"
           export OLLAMA_HOST="0.0.0.0"
+          export OLLAMA_HOME=$HOME/.ollama
           nohup ollama serve > ollama.log 2>&1 &
 
       # ------------------------------
